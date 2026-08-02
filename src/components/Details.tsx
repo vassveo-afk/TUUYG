@@ -70,8 +70,9 @@ export default function Details() {
              <div className="absolute inset-0 bg-brand-primary/20 rounded-[2.5rem] transform rotate-3 scale-105 -z-10"></div>
              <img 
                src="https://i.ibb.co/n8Qm1cM4/Chat-GPT-Image-2-ao-t-2026-23-10-02.png" 
-               alt="Fabric Details" 
+               alt="Détails du Tissu" 
                className="w-full h-auto rounded-[2.5rem] shadow-2xl object-cover aspect-square"
+               loading="lazy"
                onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&q=80&w=800";
                }}

@@ -82,8 +82,10 @@ export default function Hero() {
             <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-white p-2">
               <img
                 src="https://i.ibb.co/cXFMy0L5/Chat-GPT-Image-2-ao-t-2026-23-05-13.png"
-                alt="Luxury 4-Piece Bedding Set"
+                alt="Parure de lit de luxe 4 pièces"
                 className="w-full h-auto object-cover rounded-2xl aspect-[4/5]"
+                loading="eager"
+                fetchPriority="high"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=1200";
                 }}

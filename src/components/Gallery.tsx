@@ -4,22 +4,28 @@ import { X } from 'lucide-react';
 
 const images = [
   {
-    src: "https://i.ibb.co/QvTWFGBG/Chat-GPT-Image-2-ao-t-2026-23-11-41.png",
-    fallback: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=1200",
-    alt: "Bedroom Lifestyle",
-    span: "col-span-2 row-span-2"
+    src: "https://i.ibb.co/1Gj7xmwV/Chat-GPT-Image-3-ao-t-2026-00-18-57.png",
+    fallback: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=1200",
+    alt: "Parure de lit Mauve / Lavande",
+    span: "col-span-2 row-span-2 md:col-span-2 md:row-span-2"
   },
   {
-    src: "https://i.ibb.co/n8Qm1cM4/Chat-GPT-Image-2-ao-t-2026-23-10-02.png",
-    fallback: "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&q=80&w=800",
-    alt: "Fabric Close-up",
-    span: "col-span-1 row-span-1"
+    src: "https://i.ibb.co/QvTWFGBG/Chat-GPT-Image-2-ao-t-2026-23-11-41.png",
+    fallback: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&q=80&w=1200",
+    alt: "Parure de lit Taupe",
+    span: "col-span-1 row-span-2 md:col-span-1 md:row-span-2"
   },
   {
     src: "https://i.ibb.co/cXFMy0L5/Chat-GPT-Image-2-ao-t-2026-23-05-13.png",
     fallback: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=800",
-    alt: "Bedding Set View",
-    span: "col-span-1 row-span-1"
+    alt: "Parure de lit Ivoire (Ivory)",
+    span: "col-span-1 row-span-1 md:col-span-1 md:row-span-1"
+  },
+  {
+    src: "https://i.ibb.co/1tk6SFPy/Chat-GPT-Image-3-ao-t-2026-00-18-50.png",
+    fallback: "https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&q=80&w=800",
+    alt: "Détails Parure Mauve",
+    span: "col-span-2 row-span-1 md:col-span-2 md:row-span-1"
   }
 ];
 

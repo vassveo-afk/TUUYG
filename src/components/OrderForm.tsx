@@ -8,7 +8,7 @@ export default function OrderForm() {
     phone: '',
     city: '',
     quantity: '1',
-    color: 'White',
+    color: 'Mauve',
     product: 'Parure de Lit de Luxe 4 Pièces',
     price: '299'
   });
@@ -16,7 +16,7 @@ export default function OrderForm() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   // Note: Replace this URL with the actual Google Apps Script Web App URL.
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9o_S856ee5sLcM0PzJGOcNYmeW1nPQvVmMMsAPhOiijfua5Lr4S9AQFFJNfLtut-8hg/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkadTruE52Bhwvr9FZ1BXGxP2kSmueZc1QJsTIh7GGDaOicweyWiLhkFUycRf6olTTSw/exec";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -34,7 +34,7 @@ export default function OrderForm() {
       if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
         await new Promise(resolve => setTimeout(resolve, 1500));
         setIsSuccess(true);
-        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', color: 'White' });
+        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', color: 'Mauve' });
       } else {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
@@ -47,7 +47,7 @@ export default function OrderForm() {
         
         // Since no-cors makes response opaque, we assume success if no error thrown
         setIsSuccess(true);
-        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', color: 'White' });
+        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', color: 'Mauve' });
       }
     } catch (error) {
       console.error("Submission failed", error);
@@ -179,18 +179,31 @@ export default function OrderForm() {
 
                     <div className="space-y-2">
                         <label htmlFor="color" className="text-sm font-medium text-brand-text/80">Couleur Préférée</label>
-                        <select 
-                          id="color" 
-                          name="color"
-                          value={formData.color}
-                          onChange={handleChange}
-                          className="w-full px-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all appearance-none"
-                        >
-                          <option value="White">Blanc Classique</option>
-                          <option value="Beige">Beige Crème</option>
-                          <option value="Gray">Gris Clair</option>
-                          <option value="Taupe">Taupe</option>
-                        </select>
+                        <div className="flex gap-4 items-center">
+                          <select 
+                            id="color" 
+                            name="color"
+                            value={formData.color}
+                            onChange={handleChange}
+                            className="flex-1 px-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all appearance-none"
+                          >
+                            <option value="Mauve">Mauve / Lavande</option>
+                            <option value="Taupe">Taupe</option>
+                            <option value="Ivory">Ivoire (Ivory)</option>
+                          </select>
+                          <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-brand-primary/30 shadow-sm">
+                            <img 
+                              src={
+                                formData.color === 'Mauve' ? 'https://i.ibb.co/1Gj7xmwV/Chat-GPT-Image-3-ao-t-2026-00-18-57.png' : 
+                                formData.color === 'Taupe' ? 'https://i.ibb.co/QvTWFGBG/Chat-GPT-Image-2-ao-t-2026-23-11-41.png' :
+                                formData.color === 'Ivory' ? 'https://i.ibb.co/cXFMy0L5/Chat-GPT-Image-2-ao-t-2026-23-05-13.png' :
+                                'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=200'
+                              } 
+                              alt={formData.color} 
+                              className="w-full h-full object-cover" 
+                            />
+                          </div>
+                        </div>
                     </div>
 
                     <button 
