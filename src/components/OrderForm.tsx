@@ -16,7 +16,7 @@ export default function OrderForm() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   // Note: Replace this URL with the actual Google Apps Script Web App URL.
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9o_S856ee5sLcM0PzJGOcNYmeW1nPQvVmMMsAPhOiijfua5Lr4S9AQFFJNfLtut-8hg/exec";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData(prev => ({
