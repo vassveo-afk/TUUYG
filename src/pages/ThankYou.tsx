@@ -1,8 +1,21 @@
+import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+declare global {
+  interface Window {
+    ttq: any;
+  }
+}
+
 export default function ThankYou() {
+  useEffect(() => {
+    if (window.ttq) {
+      window.ttq.track('CompletePayment');
+    }
+  }, []);
+
   return (
     <div className="font-sans bg-brand-bg text-brand-text min-h-screen flex items-center justify-center p-4">
       <motion.div 

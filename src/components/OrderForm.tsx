@@ -59,7 +59,7 @@ export default function OrderForm() {
         await new Promise(resolve => setTimeout(resolve, 1500));
         setIsSuccess(true);
         setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', colors: ['Mauve'], sizes: ['Standard'] });
-        navigate('/merci');
+        navigate('/thank-you');
       } else {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
@@ -73,7 +73,7 @@ export default function OrderForm() {
         // Since no-cors makes response opaque, we assume success if no error thrown
         setIsSuccess(true);
         setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', colors: ['Mauve'], sizes: ['Standard'] });
-        navigate('/merci');
+        navigate('/thank-you');
       }
     } catch (error) {
       console.error("Submission failed", error);
