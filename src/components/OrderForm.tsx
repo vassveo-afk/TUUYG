@@ -1,22 +1,32 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
+import { ShoppingBag, CheckCircle2, Loader2, ArrowRight, User, Phone, MapPin, Minus, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function OrderForm() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     city: '',
     quantity: '1',
-    color: 'Mauve',
-    product: 'Parure de Lit de Luxe 4 Pièces',
-    price: '299'
+    colors: ['Mauve'],
+    sizes: ['Standard'],
+    product: 'Parure de Lit de Luxe 4 Pièces'
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   // Note: Replace this URL with the actual Google Apps Script Web App URL.
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkadTruE52Bhwvr9FZ1BXGxP2kSmueZc1QJsTIh7GGDaOicweyWiLhkFUycRf6olTTSw/exec";
+
+  const calculateTotal = (qty: string) => {
+    const q = parseInt(qty);
+    if (q === 1) return 279;
+    if (q === 2) return 489;
+    if (q >= 3) return 649;
+    return 279;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -25,16 +35,31 @@ export default function OrderForm() {
     }));
   };
 
+  const handleQuantityChange = (delta: number) => {
+    setFormData(prev => {
+      const newQty = Math.max(1, Math.min(3, parseInt(prev.quantity) + delta));
+      let newColors = [...prev.colors];
+      while (newColors.length < newQty) newColors.push('Mauve');
+      while (newColors.length > newQty) newColors.pop();
+      let newSizes = [...prev.sizes];
+      while (newSizes.length < newQty) newSizes.push('Standard');
+      while (newSizes.length > newQty) newSizes.pop();
+      return { ...prev, quantity: String(newQty), colors: newColors, sizes: newSizes };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      const submitData = { ...formData, price: calculateTotal(formData.quantity).toString(), color: formData.colors.join(', '), size: formData.sizes.join(', ') };
       // If the URL is just a placeholder, simulate a successful response
       if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
         await new Promise(resolve => setTimeout(resolve, 1500));
         setIsSuccess(true);
-        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', color: 'Mauve' });
+        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', colors: ['Mauve'], sizes: ['Standard'] });
+        navigate('/merci');
       } else {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
@@ -42,12 +67,13 @@ export default function OrderForm() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(submitData)
         });
         
         // Since no-cors makes response opaque, we assume success if no error thrown
         setIsSuccess(true);
-        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', color: 'Mauve' });
+        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', colors: ['Mauve'], sizes: ['Standard'] });
+        navigate('/merci');
       }
     } catch (error) {
       console.error("Submission failed", error);
@@ -89,7 +115,7 @@ export default function OrderForm() {
               <div className="mt-12 pt-6 border-t border-white/10">
                 <div className="flex justify-between items-end">
                   <span className="text-lg">Total</span>
-                  <span className="text-4xl font-bold font-serif">299 DH</span>
+                  <span className="text-4xl font-bold font-serif">{calculateTotal(formData.quantity)} DH</span>
                 </div>
               </div>
             </div>
@@ -119,91 +145,153 @@ export default function OrderForm() {
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-6">
+                      {Array.from({ length: parseInt(formData.quantity) }).map((_, i) => (
+                        <div key={i} className="space-y-3">
+                          <label className="text-sm font-medium text-brand-text/80">
+                            Couleur Préférée {parseInt(formData.quantity) > 1 ? `(Parure ${i + 1})` : ''} *
+                          </label>
+                          <div className="grid grid-cols-3 gap-3">
+                            {[
+                              { id: 'Mauve', name: 'Mauve', img: 'https://i.ibb.co/1Gj7xmwV/Chat-GPT-Image-3-ao-t-2026-00-18-57.png' },
+                              { id: 'Taupe', name: 'Taupe', img: 'https://i.ibb.co/QvTWFGBG/Chat-GPT-Image-2-ao-t-2026-23-11-41.png' },
+                              { id: 'Ivory', name: 'Ivoire', img: 'https://i.ibb.co/cXFMy0L5/Chat-GPT-Image-2-ao-t-2026-23-05-13.png' }
+                            ].map(color => (
+                              <button
+                                key={color.id}
+                                type="button"
+                                onClick={() => {
+                                  const newColors = [...formData.colors];
+                                  newColors[i] = color.id;
+                                  setFormData({...formData, colors: newColors});
+                                }}
+                                className={`relative rounded-xl border-2 overflow-hidden transition-all duration-300 aspect-[4/3] group ${
+                                  formData.colors[i] === color.id 
+                                    ? 'border-brand-secondary ring-4 ring-brand-secondary/20 shadow-md scale-[1.02]' 
+                                    : 'border-transparent hover:border-brand-primary/30 opacity-80 hover:opacity-100 grayscale-[0.2]'
+                                }`}
+                              >
+                                <img src={color.img} alt={color.name} className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end">
+                                  <span className="text-white text-[10px] sm:text-xs font-semibold w-full text-center p-1.5 leading-tight">{color.name}</span>
+                                </div>
+                                {formData.colors[i] === color.id && (
+                                  <div className="absolute top-1 right-1 bg-white rounded-full p-0.5 shadow-sm">
+                                    <CheckCircle2 className="w-3 h-3 text-brand-secondary fill-white" />
+                                  </div>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                          
+                          <div className="mt-4">
+                            <label className="text-sm font-medium text-brand-text/80 block mb-2">
+                              Taille {parseInt(formData.quantity) > 1 ? `(Parure ${i + 1})` : ''} *
+                            </label>
+                            <div className="grid grid-cols-3 gap-2">
+                              {['140 × 200 cm', '160 × 200 cm', 'Standard'].map(size => (
+                                <button
+                                  key={size}
+                                  type="button"
+                                  onClick={() => {
+                                    const newSizes = [...formData.sizes];
+                                    newSizes[i] = size;
+                                    setFormData({...formData, sizes: newSizes});
+                                  }}
+                                  className={`px-3 py-2 rounded-xl border text-sm font-medium transition-all ${
+                                    formData.sizes[i] === size 
+                                      ? 'border-brand-secondary bg-brand-secondary/10 text-brand-secondary shadow-sm' 
+                                      : 'border-brand-primary/20 text-brand-text/70 hover:border-brand-primary/40 hover:bg-brand-bg/50'
+                                  }`}
+                                >
+                                  {size}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
                     <div className="space-y-2">
                       <label htmlFor="name" className="text-sm font-medium text-brand-text/80">Nom Complet *</label>
-                      <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        required
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="w-full px-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all"
-                        placeholder="ex. Hassan El Amrani"
-                      />
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                          <User className="w-5 h-5 text-brand-text/40" />
+                        </div>
+                        <input 
+                          type="text" 
+                          id="name" 
+                          name="name" 
+                          required
+                          value={formData.name}
+                          onChange={handleChange}
+                          className="w-full pl-11 pr-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all"
+                          placeholder="ex. Hassan El Amrani"
+                        />
+                      </div>
                     </div>
                     
                     <div className="space-y-2">
                       <label htmlFor="phone" className="text-sm font-medium text-brand-text/80">Numéro de Téléphone *</label>
-                      <input 
-                        type="tel" 
-                        id="phone" 
-                        name="phone" 
-                        required
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full px-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all"
-                        placeholder="ex. 06 12 34 56 78"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label htmlFor="city" className="text-sm font-medium text-brand-text/80">Ville *</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                          <Phone className="w-5 h-5 text-brand-text/40" />
+                        </div>
                         <input 
-                          type="text" 
-                          id="city" 
-                          name="city" 
+                          type="tel" 
+                          id="phone" 
+                          name="phone" 
                           required
-                          value={formData.city}
+                          value={formData.phone}
                           onChange={handleChange}
-                          className="w-full px-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all"
-                          placeholder="ex. Casablanca"
+                          className="w-full pl-11 pr-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all"
+                          placeholder="ex. 06 12 34 56 78"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label htmlFor="quantity" className="text-sm font-medium text-brand-text/80">Quantité</label>
-                        <select 
-                          id="quantity" 
-                          name="quantity"
-                          value={formData.quantity}
-                          onChange={handleChange}
-                          className="w-full px-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all appearance-none"
-                        >
-                          <option value="1">1 Parure (299 DH)</option>
-                          <option value="2">2 Parures (598 DH)</option>
-                          <option value="3">3 Parures (897 DH)</option>
-                        </select>
-                      </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label htmlFor="color" className="text-sm font-medium text-brand-text/80">Couleur Préférée</label>
-                        <div className="flex gap-4 items-center">
-                          <select 
-                            id="color" 
-                            name="color"
-                            value={formData.color}
-                            onChange={handleChange}
-                            className="flex-1 px-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all appearance-none"
-                          >
-                            <option value="Mauve">Mauve / Lavande</option>
-                            <option value="Taupe">Taupe</option>
-                            <option value="Ivory">Ivoire (Ivory)</option>
-                          </select>
-                          <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-brand-primary/30 shadow-sm">
-                            <img 
-                              src={
-                                formData.color === 'Mauve' ? 'https://i.ibb.co/1Gj7xmwV/Chat-GPT-Image-3-ao-t-2026-00-18-57.png' : 
-                                formData.color === 'Taupe' ? 'https://i.ibb.co/QvTWFGBG/Chat-GPT-Image-2-ao-t-2026-23-11-41.png' :
-                                formData.color === 'Ivory' ? 'https://i.ibb.co/cXFMy0L5/Chat-GPT-Image-2-ao-t-2026-23-05-13.png' :
-                                'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=200'
-                              } 
-                              alt={formData.color} 
-                              className="w-full h-full object-cover" 
-                            />
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+                      <div className="space-y-2 sm:col-span-3">
+                        <label htmlFor="city" className="text-sm font-medium text-brand-text/80">Ville *</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <MapPin className="w-5 h-5 text-brand-text/40" />
                           </div>
+                          <input 
+                            type="text" 
+                            id="city" 
+                            name="city" 
+                            required
+                            value={formData.city}
+                            onChange={handleChange}
+                            className="w-full pl-11 pr-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all"
+                            placeholder="ex. Casablanca"
+                          />
                         </div>
+                      </div>
+                      <div className="space-y-2 sm:col-span-2">
+                        <label className="text-sm font-medium text-brand-text/80">Quantité</label>
+                        <div className="flex items-center justify-between bg-brand-bg/50 border border-brand-primary/20 rounded-xl px-2 py-2">
+                          <button 
+                            type="button" 
+                            onClick={() => handleQuantityChange(-1)}
+                            className="p-2.5 bg-white rounded-lg shadow-sm border border-brand-primary/10 hover:bg-brand-bg text-brand-text/70 transition-colors disabled:opacity-50"
+                            disabled={formData.quantity === '1'}
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="font-bold text-lg text-brand-text px-2">{formData.quantity}</span>
+                          <button 
+                            type="button" 
+                            onClick={() => handleQuantityChange(1)}
+                            className="p-2.5 bg-white rounded-lg shadow-sm border border-brand-primary/10 hover:bg-brand-bg text-brand-text/70 transition-colors disabled:opacity-50"
+                            disabled={formData.quantity === '3'}
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <button 

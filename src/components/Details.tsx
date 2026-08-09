@@ -49,15 +49,31 @@ export default function Details() {
               ))}
             </div>
 
-            <div className="mt-12 p-6 bg-white rounded-2xl shadow-lg border border-brand-primary/20 flex items-start gap-4">
-              <div className="w-12 h-12 bg-brand-bg rounded-xl flex items-center justify-center flex-shrink-0">
-                <Package className="w-6 h-6 text-brand-secondary" />
+              <div className="mt-12 space-y-4">
+                <div className="p-6 bg-white rounded-2xl shadow-lg border border-brand-primary/20 flex items-start gap-4">
+                  <div className="w-12 h-12 bg-brand-bg rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Package className="w-6 h-6 text-brand-secondary" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif font-bold text-lg mb-1">Que contient la boîte ?</h4>
+                    <p className="text-brand-text/70 text-sm">Votre commande comprend 1 housse de couette, 1 drap plat et 2 taies d'oreiller assorties, joliment emballés.</p>
+                  </div>
+                </div>
+
+                <div className="p-6 bg-white rounded-2xl shadow-lg border border-brand-primary/20 flex items-start gap-4">
+                  <div className="w-12 h-12 bg-brand-bg rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-6 h-6 text-brand-secondary" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif font-bold text-lg mb-1">Dimensions disponibles (Taille)</h4>
+                    <ul className="text-brand-text/70 text-sm space-y-1 list-disc list-inside">
+                      <li>140 × 200 cm</li>
+                      <li>160 × 200 cm</li>
+                      <li>Standard</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h4 className="font-serif font-bold text-lg mb-1">Que contient la boîte ?</h4>
-                <p className="text-brand-text/70 text-sm">Votre commande comprend 1 housse de couette, 1 drap plat et 2 taies d'oreiller assorties, joliment emballés.</p>
-              </div>
-            </div>
           </motion.div>
 
           <motion.div
