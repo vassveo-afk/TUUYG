@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle2, Loader2, ArrowRight, User, Phone, MapPin, Minus, Plus } from 'lucide-react';
+import { ShoppingBag, CheckCircle2, Loader2, ArrowRight, User, Phone, MapPin, Minus, Plus, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function OrderForm() {
@@ -8,6 +8,7 @@ export default function OrderForm() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
+    address: '',
     city: '',
     quantity: '1',
     colors: ['Mauve'],
@@ -58,7 +59,7 @@ export default function OrderForm() {
       if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
         await new Promise(resolve => setTimeout(resolve, 1500));
         setIsSuccess(true);
-        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', colors: ['Mauve'], sizes: ['Standard'] });
+        setFormData({ ...formData, name: '', phone: '', address: '', city: '', quantity: '1', colors: ['Mauve'], sizes: ['Standard'] });
         navigate('/thank-you');
       } else {
         const response = await fetch(GOOGLE_SCRIPT_URL, {
@@ -72,7 +73,7 @@ export default function OrderForm() {
         
         // Since no-cors makes response opaque, we assume success if no error thrown
         setIsSuccess(true);
-        setFormData({ ...formData, name: '', phone: '', city: '', quantity: '1', colors: ['Mauve'], sizes: ['Standard'] });
+        setFormData({ ...formData, name: '', phone: '', address: '', city: '', quantity: '1', colors: ['Mauve'], sizes: ['Standard'] });
         navigate('/thank-you');
       }
     } catch (error) {
@@ -247,6 +248,25 @@ export default function OrderForm() {
                           onChange={handleChange}
                           className="w-full pl-11 pr-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all"
                           placeholder="ex. 06 12 34 56 78"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="address" className="text-sm font-medium text-brand-text/80">Adresse de Livraison *</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                          <Home className="w-5 h-5 text-brand-text/40" />
+                        </div>
+                        <input 
+                          type="text" 
+                          id="address" 
+                          name="address" 
+                          required
+                          value={formData.address}
+                          onChange={handleChange}
+                          className="w-full pl-11 pr-5 py-4 bg-brand-bg/50 border border-brand-primary/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-secondary/50 focus:border-brand-secondary transition-all"
+                          placeholder="ex. Quartier, Rue, N° de maison..."
                         />
                       </div>
                     </div>
